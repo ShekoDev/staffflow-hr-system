@@ -1,0 +1,191 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------
+   Theme tokens.
+   These defaults keep the app usable before the theme table is loaded;
+   ThemeProvider overwrites them at runtime from the `themes` table.
+--------------------------------------------------------------------- */
+:root {
+  --sf-primary: #2563eb;
+  --sf-primary-hover: #1d4ed8;
+  --sf-primary-fg: #ffffff;
+  --sf-accent: #38bdf8;
+  --sf-bg: #f4f7fb;
+  --sf-surface: #ffffff;
+  --sf-surface-2: #f8fafc;
+  --sf-border: #e2e8f0;
+  --sf-text: #0f172a;
+  --sf-text-muted: #64748b;
+  --sf-success: #16a34a;
+  --sf-warning: #d97706;
+  --sf-danger: #dc2626;
+  --sf-radius: 14px;
+  --sf-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px -12px rgba(15, 23, 42, 0.18);
+  --sf-surface-blur: none;
+  color-scheme: light;
+}
+
+html[data-mode='dark'] {
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    border-color: var(--sf-border);
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--sf-bg);
+    background-attachment: fixed;
+    color: var(--sf-text);
+    font-family: 'Inter', 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  html.font-arabic body {
+    font-family: 'Cairo', 'Tajawal', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4 {
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--sf-primary) 24%, transparent);
+  }
+
+  /* Scrollbars that follow the theme instead of fighting it */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--sf-text-muted) 40%, transparent) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--sf-text-muted) 35%, transparent);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--sf-text-muted) 60%, transparent);
+    background-clip: content-box;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--sf-primary);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  /* A themed surface: respects glassmorphism blur when a theme asks for it */
+  .sf-surface {
+    background: var(--sf-surface);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius);
+    box-shadow: var(--sf-shadow);
+    backdrop-filter: var(--sf-surface-blur);
+    -webkit-backdrop-filter: var(--sf-surface-blur);
+  }
+
+  .sf-surface-alt {
+    background: var(--sf-surface-2);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius);
+    backdrop-filter: var(--sf-surface-blur);
+    -webkit-backdrop-filter: var(--sf-surface-blur);
+  }
+
+  .sf-input {
+    width: 100%;
+    background: var(--sf-surface);
+    border: 1px solid var(--sf-border);
+    border-radius: calc(var(--sf-radius) * 0.6);
+    padding: 0.55rem 0.85rem;
+    font-size: 0.9rem;
+    color: var(--sf-text);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+  }
+  .sf-input::placeholder {
+    color: var(--sf-text-muted);
+    opacity: 0.75;
+  }
+  .sf-input:focus {
+    outline: none;
+    border-color: var(--sf-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--sf-primary) 18%, transparent);
+  }
+  .sf-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .sf-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--sf-text-muted);
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.01em;
+  }
+
+  .sf-skeleton {
+    position: relative;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--sf-text-muted) 14%, transparent);
+    border-radius: calc(var(--sf-radius) * 0.5);
+  }
+  .sf-skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--sf-surface) 70%, transparent),
+      transparent
+    );
+    animation: shimmer 1.6s infinite;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Logical-direction helpers so RTL works without duplicating styles */
+.sf-start {
+  text-align: start;
+}
+.sf-end {
+  text-align: end;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
